@@ -12,7 +12,7 @@ export type SearchParam = {
   productModel: string;
   skuId: string;
   skuName: string;
-  skuStatus: 0 | 1 | 2 | 10; //0-下柜，1-上柜，2-下柜（可上柜），10-已删除
+  skuStatus: 0 | 1 | 2 | 10;
 };
 
 // 列表项
