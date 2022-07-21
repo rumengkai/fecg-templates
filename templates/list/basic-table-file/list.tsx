@@ -106,7 +106,7 @@ const SkuCheckList = () => {
       <ProTable
         columns={columns}
         options={false}
-        pagination={{
+        pagination=\{{
           pageSizeOptions: [10, 20, 50],
         }}
         request={queryList}
