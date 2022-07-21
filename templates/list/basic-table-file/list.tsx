@@ -34,31 +34,6 @@ const columns: ProColumns<ListItem>[] = [
     align: 'center',
   },
   {
-    title: '产品名称',
-    dataIndex: 'productName',
-    align: 'center',
-  },
-  {
-    title: '产品型号',
-    dataIndex: 'productModel',
-    align: 'center',
-  },
-  {
-    title: '产品sku',
-    dataIndex: 'skuId',
-    align: 'center',
-  },
-  {
-    title: 'sku链接',
-    dataIndex: 'skuUrl',
-    align: 'center',
-  },
-  {
-    title: '商品名称',
-    dataIndex: 'skuName',
-    align: 'center',
-  },
-  {
     title: '上下柜状态',
     dataIndex: 'checkStatus',
     ellipsis: true,
