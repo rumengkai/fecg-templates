@@ -8,9 +8,6 @@
         "name": "basic-table-file",
         "description": "适用于业务的模版文件",
         "templateFiles": [
-          "templates/list/basic-table-file/api/commonApi.tsx",
-          "templates/list/basic-table-file/api/listApi.tsx",
-          "templates/list/basic-table-file/types/listType.tsx",
           "templates/list/basic-table-file/list.tsx"
         ]
       },
