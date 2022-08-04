@@ -8,7 +8,9 @@
         "name": "basic-table-file",
         "description": "适用于业务的模版文件",
         "templateFiles": [
-          "templates/list/basic-table-file/list.tsx"
+          "templates/list/basic-table-file/list.tsx",
+          "templates/list/basic-table-file/list.module.less",
+          "templates/list/basic-table-file/__tests__/list.test.tsx"
         ]
       },
       {
