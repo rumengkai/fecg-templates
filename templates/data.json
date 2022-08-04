@@ -94,6 +94,15 @@
     ]
   },
   {
+    "name": "html",
+    "description": "生成 Vue Element UI 单个页面",
+    "isGeneral": true,
+    "isFolder": false,
+    "templateFiles": [
+      "templates/html/vue_element_ui_tpl.html"
+    ]
+  },
+  {
     "name": "openapi",
     "description": "根据swagger openapi3 生成 server",
     "isGeneral": false
