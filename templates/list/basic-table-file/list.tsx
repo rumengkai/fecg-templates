@@ -88,10 +88,10 @@ const List = () => {
       <ProTable
         columns={columns}
         options={false}
-        pagination={{
+        pagination=\{{
           pageSizeOptions: [10, 20, 50],
         }}
-        scroll={{ x: 1300 }}
+        scroll=\{{ x: 1300 }}
         request={queryList}
         tableAlertRender={false}
         toolBarRender={false}
