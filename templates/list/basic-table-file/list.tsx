@@ -1,72 +1,51 @@
-import { exportDataApi, queryPassListApi } from '@/service';
-import { PassItem, PassListParam } from '@/service/types';
-import { DownOutlined } from '@ant-design/icons';
-import type { ProColumns, ProFormInstance } from '@ant-design/pro-components';
+import { queryCheckListApi } from '@/service';
+import { CheckListItem, CheckListParam } from '@/service/types';
+import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
-import { useRef } from 'react';
-
+import styles from './sku.module.less';
 
 const List = () => {
-  const formRef = useRef<ProFormInstance>();
+
   /**
    * @description: 请求列表
-   * @param {ListParam} params
+   * @param {CheckListParam} params
    * @return {*}
    */
-  const queryList = async (params: PassListParam & { current: number }) => {
-    console.log(params, 'queryList----res---');
-
-    const res = await queryPassListApi({ ...params, pageNo: params.current });
+  const queryList = async (params: CheckListParam & { current: number }) => {
+    const { current } = params;
+    const res = await queryCheckListApi({ ...params, pageNo: current });
     return {
       data: [...res.list],
       total: res.total,
     };
   };
 
-  const columns: ProColumns<PassItem>[] = [
-    {
-      title: '产品UUID',
-      dataIndex: 'uuid',
-      align: 'center',
-    },
-    {
-      title: '产品名称',
-      dataIndex: 'productName',
-      align: 'center',
-    },
-    {
-      title: '产品型号',
-      dataIndex: 'productModel',
-      align: 'center',
-    },
-    {
-      title: '产品sku',
-      dataIndex: 'skuId',
-      align: 'center',
-    },
-    {
-      title: 'sku链接',
-      dataIndex: 'skuUrl',
-      align: 'center',
-      search: false,
-      width: 300,
-      render: (_: any, record: PassItem) => {
-        return (
-          <Button type="link" href={record.skuUrl} target="_blank">
-            {record.skuUrl}
-          </Button>
-        );
+  /**
+   * @description: 点击查看审核详情
+   * @param {string} id
+   * @return {*}
+   */
+  const handleViewCheck = (id: string) => {
+    navigateTo(`/sku/checkDetail`, {
+      state: {
+        detailId: id,
       },
-    },
+    });
+  };
+
+  const columns: ProColumns<CheckListItem>[] = [
     {
-      title: '商品名称',
-      dataIndex: 'skuName',
+      title: 'ID',
+      dataIndex: 'id',
+      search: false,
       align: 'center',
+      width: 120,
+      fixed: 'left',
     },
     {
-      title: '上下柜状态',
-      dataIndex: 'skuStatus',
+      title: '审核状态',
+      dataIndex: 'checkStatus',
       ellipsis: true,
       valueType: 'select',
       fieldProps: {
@@ -76,182 +55,50 @@ const List = () => {
             value: 999,
           },
           {
-            label: '下柜',
+            label: '待审核',
             value: 0,
-          },
-          {
-            label: '上柜',
-            value: 1,
-          },
-          {
-            label: '下柜（可上柜）',
-            value: 2,
-          },
-          {
-            label: '已删除',
-            value: 10,
-          },
+          }
         ],
       },
       align: 'center',
     },
+    {
+      title: '操作',
+      width: 150,
+      dataIndex: 'option',
+      valueType: 'option',
+      key: 'option',
+      align: 'center',
+      fixed: 'right',
+      render: (text, record, _, action) => [
+        <Button
+          key="viewCheck"
+          type="link"
+          size="small"
+          className={styles['opt-btn']}
+          onClick={() => handleViewCheck(record.id)}
+        >
+          审核详情
+        </Button>
+      ],
+    },
   ];
-
-  /**
-   * @description: 导出excel
-   * @return {*}
-   */
-  const handelExport = async () => {
-    /** 去掉undefined的字段，小tips */
-    const params = JSON.parse(JSON.stringify(formRef.current.getFieldsValue()));
-    const res = await exportDataApi(params);
-    const blobObj = new Blob([res], {
-      type: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    const url = window.URL.createObjectURL(blobObj as any); // 创建 URL 对象
-    window.location.href = url;
-  };
-
   return (
-    <div className="list">
+    <div className={styles['sku-check-list']}>
       <ProTable
-        formRef={formRef}
         columns={columns}
         options={false}
         pagination={{
           pageSizeOptions: [10, 20, 50],
         }}
+        scroll={{ x: 1300 }}
         request={queryList}
-        toolBarRender={() => [
-          <Button key="out" onClick={handelExport}>
-            导出数据
-            <DownOutlined />
-          </Button>,
-        ]}
-        rowKey="skuId"
-      ></ProTable>
-    </div>
-  );
-};
-
-export default import { exportDataApi, queryPassListApi } from '@/service';
-import { PassItem, PassListParam } from '@/service/types';
-import { DownOutlined } from '@ant-design/icons';
-import type { ProColumns, ProFormInstance } from '@ant-design/pro-components';
-import { ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
-import { useRef } from 'react';
-// import { ExportExcel } from 'utils/tools';
-
-// 0 | 1 | 2 | 10; //0-下柜，1-上柜，2-下柜（可上柜），10-已删除
-// 审核状态列表
-const checkStatusList = {
-  999: { text: '全部' },
-  0: {
-    text: '下柜',
-  },
-  1: {
-    text: '上柜',
-  }
-};
-
-const List = () => {
-  const formRef = useRef<ProFormInstance>();
-  /**
-   * @description: 请求列表
-   * @param {ListParam} params
-   * @return {*}
-   */
-  const queryList = async (params: PassListParam & { current: number }) => {
-    console.log(params, 'queryList----res---');
-
-    const res = await queryPassListApi({ ...params, pageNo: params.current });
-    return {
-      data: [...res.list],
-      total: res.total,
-    };
-  };
-
-  const columns: ProColumns<PassItem>[] = [
-    {
-      title: '产品UUID',
-      dataIndex: 'uuid',
-      align: 'center',
-      search: false,
-    },
-    {
-      title: '上下柜状态',
-      dataIndex: 'skuStatus',
-      ellipsis: true,
-      valueType: 'select',
-      fieldProps: {
-        options: [
-          {
-            label: '全部',
-            value: 999,
-          },
-          {
-            label: '下柜',
-            value: 0,
-          },
-          {
-            label: '上柜',
-            value: 1,
-          },
-          {
-            label: '下柜（可上柜）',
-            value: 2,
-          },
-          {
-            label: '已删除',
-            value: 10,
-          },
-        ],
-      },
-      align: 'center',
-      render: (_: any, record: PassItem) => {
-        const { skuStatus } = record;
-        return (!!skuStatus && checkStatusList[skuStatus].text) || '- -';
-      },
-    },
-  ];
-
-  /**
-   * @description: 导出excel
-   * @return {*}
-   */
-  const handelExport = async () => {
-    /** 去掉undefined的字段，小tips */
-    const params = JSON.parse(JSON.stringify(formRef.current.getFieldsValue()));
-    const res = await exportDataApi(params);
-    const blobObj = new Blob([res], {
-      type: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    const url = window.URL.createObjectURL(blobObj as any); // 创建 URL 对象
-    window.location.href = url;
-  };
-
-  return (
-    <div className="sku-list wrap">
-      <ProTable
-        formRef={formRef}
-        columns={columns}
-        options={false}
-        pagination={{
-          pageSizeOptions: [10, 20, 50],
-        }}
-        request={queryList}
-        toolBarRender={() => [
-          <Button key="out" onClick={handelExport}>
-            导出数据
-            <DownOutlined />
-          </Button>,
-        ]}
-        rowKey="skuId"
+        tableAlertRender={false}
+        toolBarRender={false}
+        rowKey="id"
       ></ProTable>
     </div>
   );
 };
 
 export default List;
-;
